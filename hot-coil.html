@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHINACNU 热卷价格</title>
+  <link rel="stylesheet" href="/styles/main.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <div class="top-bar">
+      <img src="/images/logo.png" alt="CHINACNU Logo" class="logo" />
+      <div class="language-switcher">
+        <button>🇨🇳</button><button>🇺🇸</button>
+      </div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">首页 / Home</a></li>
+        <li><a href="/hot-coil.html">热卷价格 / Hot Coil</a></li>
+        <li><a href="/admin/hotcoil.html">后台管理 / Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>热卷价格 / Hot Rolled Coil Price</h1>
+    </section>
+
+    <section class="price-summary">
+      <h2>今日价格 / Today’s Price</h2>
+      <div class="product-grid">
+        <div class="product-card">
+          <h3>热卷</h3>
+          <p id="price">加载中...</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="charts">
+      <h2>价格趋势图 / Price Trend</h2>
+      <canvas id="priceChart"></canvas>
+    </section>
+
+    <section class="cta">
+      <a href="https://wa.me/8619154316688" class="whatsapp-button">📞 一键 WhatsApp 咨询</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 CHINACNU STEEL. All rights reserved. | sales@chinacnu.com</p>
+  </footer>
+
+  <script>
+    async function loadDataFromGitHub() {
+      const token = "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";
+      const owner = "yalesherwin";
+      const repo = "chinacnu-official-site";
+      const path = "data/hotcoil-data.json";
+
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github.v3.raw"
+        }
+      });
+
+      if (!res.ok) {
+        document.getElementById("price").innerText = "❌ 数据加载失败";
+        console.error("GitHub API 获取失败", await res.text());
+        return;
+      }
+
+      const data = await res.json();
+      const history = data.history;
+      const latest = history[history.length - 1];
+      const prev = history[history.length - 2];
+      const delta = latest.price - prev.price;
+
+      document.getElementById("price").innerHTML = `¥${latest.price} <span class="${delta >= 0 ? 'up' : 'down'}">${delta >= 0 ? '↑' : '↓'}${Math.abs(delta)}</span>`;
+
+      const ctx = document.getElementById('priceChart');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: history.map(d => d.date),
+          datasets: [{
+            label: '热卷价格',
+            data: history.map(d => d.price),
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
+      });
+    }
+
+    loadDataFromGitHub();
+  </script>
+</body>
+</html>
