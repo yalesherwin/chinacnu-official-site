@@ -1,1 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>热卷后台管理</title>
+  <link rel="stylesheet" href="/styles/main.css" />
+</head>
+<body>
+  <main style="max-width: 600px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 12px;">
+    <h1>热卷后台管理 / Admin</h1>
 
+    <form id="priceForm">
+      <label for="basePrice">基础价格（只填一次）:</label><br />
+      <input type="number" id="basePrice" value="3000" readonly /><br /><br />
+
+      <label for="lastPrice">昨日价格:</label><br />
+      <input type="number" id="lastPrice" value="3020" readonly /><br /><br />
+
+      <label for="delta">今日涨跌（+/- 数字）:</label><br />
+      <input type="number" id="delta" placeholder="如 +20 或 -10" required /><br /><br />
+
+      <button type="submit">提交 / 更新价格</button>
+    </form>
+
+    <p id="result" style="margin-top: 20px;"></p>
+  </main>
+
+  <script>
+    const form = document.getElementById("priceForm");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const base = parseInt(document.getElementById("basePrice").value);
+      const last = parseInt(document.getElementById("lastPrice").value);
+      const delta = parseInt(document.getElementById("delta").value);
+      const newPrice = last + delta;
+
+      const today = new Date();
+      const dateStr = today.toISOString().split("T")[0];
+
+      // 模拟历史数据结构
+      let data = {
+        base: base,
+        history: [
+          { date: "2025-04-01", price: 3000 },
+          { date: "2025-04-02", price: 3020 }
+        ]
+      };
+
+      // 添加新数据
+      data.history.push({ date: dateStr, price: newPrice });
+
+      // 模拟保存为 JSON（实际部署中应 POST 到服务器写入）
+      const jsonBlob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(jsonBlob);
+      downloadLink.download = "hotcoil-data.json";
+      downloadLink.click();
+
+      result.innerText = `✅ 已更新并生成数据文件：今日价格为 ¥${newPrice}`;
+    });
+  </script>
+</body>
+</html>
