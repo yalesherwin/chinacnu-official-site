@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHINACNU Steel Daily Prices</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <div class="top-bar">
+      <img src="images/logo.png" alt="CHINACNU Logo" class="logo" />
+      <div class="language-switcher">
+        <button>🇨🇳</button><button>🇺🇸</button><button>🇸🇦</button>
+        <button>🇷🇺</button><button>🇫🇷</button><button>🇪🇸</button><button>🇧🇷</button>
+      </div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">首页 / Home</a></li>
+        <li><a href="/products.html">产品价格 / Products</a></li>
+        <li><a href="/contact.html">联系我们 / Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>CHINACNU 每日钢铁价格 / Daily Steel Prices</h1>
+      <p>热卷 / 镀锌卷 / 彩涂卷 等</p>
+    </section>
+
+    <section class="price-summary">
+      <h2>今日价格摘要 / Today’s Prices</h2>
+      <div class="product-grid">
+        <div class="product-card">
+          <h3>热卷</h3>
+          <p>¥4200 <span class="up">↑50</span></p>
+        </div>
+        <div class="product-card">
+          <h3>镀锌</h3>
+          <p>¥4780 <span class="down">↓30</span></p>
+        </div>
+        <div class="product-card">
+          <h3>彩涂</h3>
+          <p>¥5200 <span class="up">↑20</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="charts">
+      <h2>价格趋势图 / Price Trend</h2>
+      <canvas id="priceChart"></canvas>
+    </section>
+
+    <section class="cta">
+      <a href="https://wa.me/8619154316688" class="whatsapp-button">📞 一键 WhatsApp 咨询</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 CHINACNU STEEL. All rights reserved. | sales@chinacnu.com</p>
+  </footer>
+
+  <script>
+    const ctx = document.getElementById('priceChart');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['3/30', '3/31', '4/1', '4/2', '4/3', '4/4'],
+        datasets: [
+          {
+            label: '热卷价格',
+            data: [4150, 4180, 4170, 4190, 4200, 4200],
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: false
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
